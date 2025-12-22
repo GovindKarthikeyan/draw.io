@@ -1,5 +1,6 @@
-@import "tailwindcss";
+@use "tailwindcss";
 
+// CSS Variables
 :root {
   --background: #ffffff;
   --foreground: #171717;
@@ -12,6 +13,7 @@
   --font-mono: var(--font-geist-mono);
 }
 
+// Dark mode support
 @media (prefers-color-scheme: dark) {
   :root {
     --background: #0a0a0a;
@@ -19,13 +21,14 @@
   }
 }
 
+// Body styles
 body {
   background: var(--background);
   color: var(--foreground);
   font-family: Arial, Helvetica, sans-serif;
 }
 
-/* Accessibility: Screen reader only content */
+// Accessibility: Screen reader only content
 .sr-only {
   position: absolute;
   width: 1px;
@@ -36,26 +39,26 @@ body {
   clip: rect(0, 0, 0, 0);
   white-space: nowrap;
   border-width: 0;
+
+  &:focus {
+    position: static;
+    width: auto;
+    height: auto;
+    padding: inherit;
+    margin: inherit;
+    overflow: visible;
+    clip: auto;
+    white-space: normal;
+  }
 }
 
-.sr-only:focus {
-  position: static;
-  width: auto;
-  height: auto;
-  padding: inherit;
-  margin: inherit;
-  overflow: visible;
-  clip: auto;
-  white-space: normal;
-}
-
-/* Accessibility: Focus visible styles */
+// Accessibility: Focus visible styles
 *:focus-visible {
   outline: 2px solid #3b82f6;
   outline-offset: 2px;
 }
 
-/* Accessibility: Reduced motion */
+// Accessibility: Reduced motion
 @media (prefers-reduced-motion: reduce) {
   *,
   *::before,
@@ -67,7 +70,7 @@ body {
   }
 }
 
-/* Print styles for better printing */
+// Print styles for better printing
 @media print {
   body {
     background: white;
@@ -84,10 +87,9 @@ body {
   }
 }
 
-/* High contrast mode support */
+// High contrast mode support
 @media (prefers-contrast: high) {
   button {
     border: 2px solid currentColor;
   }
 }
-

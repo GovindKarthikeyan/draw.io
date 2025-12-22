@@ -115,9 +115,11 @@ npm run build
 - **Next.js 16**: React framework for server-side rendering and static site generation
 - **TypeScript**: Type-safe JavaScript
 - **Tailwind CSS**: Utility-first CSS framework
+- **SCSS**: Advanced stylesheet language with variables and nesting
 - **xlsx**: Excel file parsing library
 - **html2canvas**: HTML to image conversion for pixel-perfect printing
 - **Azure Application Insights**: Comprehensive telemetry and monitoring (optional)
+- **Jest & React Testing Library**: Comprehensive unit testing framework
 
 ## SEO & Accessibility
 
@@ -179,7 +181,7 @@ excel-renderer/
 │   │   └── AppInsightsProvider.tsx # Telemetry provider
 │   ├── page.tsx                # Main application page
 │   ├── layout.tsx              # Application layout
-│   └── globals.css             # Global styles
+│   └── globals.scss            # Global styles (SCSS)
 ├── lib/
 │   ├── appInsights.client.ts   # Client-side telemetry
 │   └── appInsights.server.ts   # Server-side telemetry
