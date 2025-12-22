@@ -7,6 +7,7 @@ This document outlines the SEO optimizations and accessibility features implemen
 ### 1. Meta Tags & Metadata
 
 **Enhanced Metadata** (`app/layout.tsx`):
+
 - Comprehensive page title with keywords
 - Detailed meta description (150-160 characters)
 - Keywords array for better indexing
@@ -14,12 +15,14 @@ This document outlines the SEO optimizations and accessibility features implemen
 - Robots directives for search engine crawling
 
 **Open Graph Tags**:
+
 - og:type, og:locale, og:url
 - og:title and og:description
 - og:site_name and og:images
 - Optimized for social media sharing
 
 **Twitter Cards**:
+
 - twitter:card (summary_large_image)
 - twitter:title and twitter:description
 - twitter:images and twitter:creator
@@ -28,6 +31,7 @@ This document outlines the SEO optimizations and accessibility features implemen
 ### 2. Structured Data (Schema.org)
 
 **JSON-LD Markup**:
+
 ```json
 {
   "@type": "WebApplication",
@@ -39,6 +43,7 @@ This document outlines the SEO optimizations and accessibility features implemen
 ```
 
 Benefits:
+
 - Rich snippets in search results
 - Better understanding by search engines
 - Increased click-through rates
@@ -46,16 +51,19 @@ Benefits:
 ### 3. Technical SEO
 
 **Performance**:
+
 - Preconnect to external domains
 - Optimized font loading
 - Lazy loading where applicable
 
 **Files Created**:
+
 - `robots.txt` - Crawler directives
 - `sitemap.xml` - Site structure for search engines
 - `manifest.json` - PWA support
 
 **URL Structure**:
+
 - Clean, semantic URLs
 - Canonical URL specification
 - Proper use of semantic HTML5 elements
@@ -63,11 +71,13 @@ Benefits:
 ### 4. Content Optimization
 
 **Semantic HTML**:
+
 - Proper heading hierarchy (h1 → h2 → h3)
 - Semantic elements (header, nav, main, footer, section, article)
 - Descriptive alt text for images (when added)
 
 **Keywords Targeted**:
+
 - Excel viewer
 - Excel file renderer
 - View excel online
@@ -81,17 +91,20 @@ Benefits:
 ### 1. Keyboard Navigation
 
 **Focus Management**:
+
 - Visible focus indicators on all interactive elements
 - Logical tab order throughout the application
 - Focus rings with proper contrast (outline: 2px solid #3b82f6)
 
 **Skip Links**:
+
 - "Skip to main content" link for keyboard users
 - Becomes visible on focus
 
 ### 2. Screen Reader Support
 
 **ARIA Attributes**:
+
 - `role` attributes on custom components
 - `aria-label` for descriptive labels
 - `aria-labelledby` for associating labels
@@ -101,6 +114,7 @@ Benefits:
 - `aria-hidden` for decorative elements
 
 **Semantic HTML**:
+
 - `<header>`, `<nav>`, `<main>`, `<footer>` landmarks
 - `<button>` instead of clickable divs
 - Proper table markup with roles
@@ -108,16 +122,19 @@ Benefits:
 ### 3. Visual Accessibility
 
 **Color Contrast**:
+
 - Text meets WCAG AA standards (4.5:1 minimum)
 - Focus indicators have sufficient contrast
 - High contrast mode support via media query
 
 **Typography**:
+
 - Readable font sizes (minimum 16px for body text)
 - Sufficient line height for readability
 - Responsive text sizing
 
 **Visual Indicators**:
+
 - Not relying solely on color to convey information
 - Icons paired with text labels
 - Clear button states (hover, focus, active)
@@ -125,6 +142,7 @@ Benefits:
 ### 4. Motion & Animation
 
 **Reduced Motion Support**:
+
 ```css
 @media (prefers-reduced-motion: reduce) {
   * {
@@ -137,24 +155,28 @@ Benefits:
 ### 5. Form Accessibility
 
 **File Input**:
+
 - Associated label with input
 - Clear instructions and error messages
 - Proper MIME type acceptance
 - File size limits communicated upfront
 
 **Status Messages**:
+
 - `role="status"` for file selection feedback
 - `aria-live="polite"` for non-intrusive updates
 
 ### 6. Interactive Elements
 
 **Buttons**:
+
 - Descriptive `aria-label` attributes
 - Proper `type="button"` specification
 - Focus-visible styles
 - Keyboard activation support
 
 **Tabs**:
+
 - ARIA tab pattern implementation
 - `role="tablist"`, `role="tab"`, `role="tabpanel"`
 - Arrow key navigation (can be enhanced further)
@@ -164,6 +186,7 @@ Benefits:
 ### SEO Testing Tools
 
 1. **Google Lighthouse**:
+
    ```bash
    npm install -g lighthouse
    lighthouse http://localhost:3000 --view
@@ -290,6 +313,7 @@ Benefits:
 ## Compliance
 
 This application aims to meet:
+
 - ✅ WCAG 2.1 Level AA
 - ✅ Section 508 compliance
 - ✅ ADA (Americans with Disabilities Act) standards
@@ -298,6 +322,7 @@ This application aims to meet:
 ## Support
 
 For accessibility issues or questions:
+
 - Report via GitHub Issues
 - Email: accessibility@yourdomain.com
 - Provide detailed description of the issue

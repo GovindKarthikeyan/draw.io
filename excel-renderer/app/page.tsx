@@ -17,14 +17,14 @@ export default function Home() {
   const handleFileLoaded = (wb: XLSX.WorkBook) => {
     setWorkbook(wb);
     trackEvent('WorkbookLoaded', {
-      sheetCount: wb.SheetNames.length.toString()
+      sheetCount: wb.SheetNames.length.toString(),
     });
   };
 
   const handlePrint = () => {
     console.log('Print initiated');
   };
-  
+
   const handleUploadDifferent = () => {
     trackEvent('UploadDifferentFileClicked');
     setWorkbook(null);
@@ -35,9 +35,7 @@ export default function Home() {
       <div className="max-w-7xl mx-auto">
         {/* Page Header with SEO-friendly heading structure */}
         <header className="text-center mb-8" role="banner">
-          <h1 className="text-4xl font-bold text-gray-900 mb-2">
-            Excel File Renderer
-          </h1>
+          <h1 className="text-4xl font-bold text-gray-900 mb-2">Excel File Renderer</h1>
           <p className="text-lg text-gray-600 max-w-2xl mx-auto">
             Upload Excel files and view them with pixel-perfect formatting
           </p>
@@ -76,29 +74,43 @@ export default function Home() {
         {/* Page Footer */}
         <footer className="text-center mt-12 text-gray-600 text-sm" role="contentinfo">
           <p>
-            Supports <abbr title="Excel Spreadsheet">xlsx</abbr>, <abbr title="Excel 97-2003">xls</abbr>, and <abbr title="Excel Macro-Enabled">xlsm</abbr> file formats
+            Supports <abbr title="Excel Spreadsheet">xlsx</abbr>,{' '}
+            <abbr title="Excel 97-2003">xls</abbr>, and{' '}
+            <abbr title="Excel Macro-Enabled">xlsm</abbr> file formats
           </p>
           <nav aria-label="Footer navigation" className="mt-4">
             <ul className="flex justify-center gap-6 flex-wrap">
               <li>
-                <a href="/api/files" className="hover:text-blue-600 focus:text-blue-600 focus:underline">
+                <a
+                  href="/api/files"
+                  className="hover:text-blue-600 focus:text-blue-600 focus:underline"
+                >
                   File API
                 </a>
               </li>
               <li>
-                <a href="https://github.com/yourusername/excel-renderer" className="hover:text-blue-600 focus:text-blue-600 focus:underline" target="_blank" rel="noopener noreferrer">
+                <a
+                  href="https://github.com/yourusername/excel-renderer"
+                  className="hover:text-blue-600 focus:text-blue-600 focus:underline"
+                  target="_blank"
+                  rel="noopener noreferrer"
+                >
                   GitHub
                 </a>
               </li>
               <li>
-                <a href="#privacy" className="hover:text-blue-600 focus:text-blue-600 focus:underline">
+                <a
+                  href="#privacy"
+                  className="hover:text-blue-600 focus:text-blue-600 focus:underline"
+                >
                   Privacy Policy
                 </a>
               </li>
             </ul>
           </nav>
           <p className="mt-4 text-xs">
-            © {new Date().getFullYear()} Excel File Renderer. All files are processed locally in your browser.
+            © {new Date().getFullYear()} Excel File Renderer. All files are processed locally in
+            your browser.
           </p>
         </footer>
       </div>

@@ -23,7 +23,7 @@ function sanitizeFilename(filename: string): string {
 export async function POST(request: NextRequest) {
   try {
     const contentType = request.headers.get('content-type') || '';
-    
+
     if (!contentType.includes('multipart/form-data')) {
       return NextResponse.json(
         { error: 'Content-Type must be multipart/form-data' },
@@ -35,10 +35,7 @@ export async function POST(request: NextRequest) {
     const file = formData.get('file') as File;
 
     if (!file) {
-      return NextResponse.json(
-        { error: 'No file provided' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'No file provided' }, { status: 400 });
     }
 
     // Validate file type
@@ -55,7 +52,10 @@ export async function POST(request: NextRequest) {
 
     if (!allowedTypes.includes(file.type) && !file.name.match(allowedExtensions)) {
       return NextResponse.json(
-        { error: 'Invalid file type. Only Excel (.xlsx, .xls, .xlsm), CSV (.csv), and PDF (.pdf) files are allowed' },
+        {
+          error:
+            'Invalid file type. Only Excel (.xlsx, .xls, .xlsm), CSV (.csv), and PDF (.pdf) files are allowed',
+        },
         { status: 400 }
       );
     }
@@ -63,20 +63,14 @@ export async function POST(request: NextRequest) {
     // Validate file size (50MB max)
     const maxSize = 50 * 1024 * 1024; // 50MB
     if (file.size > maxSize) {
-      return NextResponse.json(
-        { error: 'File size exceeds 50MB limit' },
-        { status: 413 }
-      );
+      return NextResponse.json({ error: 'File size exceeds 50MB limit' }, { status: 413 });
     }
 
     // Sanitize filename to prevent path traversal attacks
     const sanitizedName = sanitizeFilename(file.name);
-    
+
     if (!sanitizedName || sanitizedName.length === 0) {
-      return NextResponse.json(
-        { error: 'Invalid filename' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
     }
 
     // Read file as ArrayBuffer and convert to base64
@@ -105,7 +99,7 @@ export async function POST(request: NextRequest) {
     );
   } catch (error) {
     console.error('[API] Error uploading file:', error);
-    
+
     return NextResponse.json(
       { error: 'Internal server error while uploading file' },
       { status: 500 }
@@ -123,29 +117,20 @@ export async function GET(request: NextRequest) {
     const fileName = searchParams.get('filename');
 
     if (!fileName) {
-      return NextResponse.json(
-        { error: 'Filename parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Filename parameter is required' }, { status: 400 });
     }
 
     // Sanitize filename to prevent path traversal
     const sanitizedName = sanitizeFilename(fileName);
-    
+
     if (!sanitizedName || sanitizedName.length === 0) {
-      return NextResponse.json(
-        { error: 'Invalid filename' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
     }
 
     const fileData = fileStorage.get(sanitizedName);
 
     if (!fileData) {
-      return NextResponse.json(
-        { error: 'File not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
     console.log(`[API] File retrieved: ${sanitizedName}`);
@@ -162,7 +147,7 @@ export async function GET(request: NextRequest) {
     );
   } catch (error) {
     console.error('[API] Error retrieving file:', error);
-    
+
     return NextResponse.json(
       { error: 'Internal server error while retrieving file' },
       { status: 500 }
@@ -180,29 +165,20 @@ export async function DELETE(request: NextRequest) {
     const fileName = searchParams.get('filename');
 
     if (!fileName) {
-      return NextResponse.json(
-        { error: 'Filename parameter is required' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Filename parameter is required' }, { status: 400 });
     }
 
     // Sanitize filename to prevent path traversal
     const sanitizedName = sanitizeFilename(fileName);
-    
+
     if (!sanitizedName || sanitizedName.length === 0) {
-      return NextResponse.json(
-        { error: 'Invalid filename' },
-        { status: 400 }
-      );
+      return NextResponse.json({ error: 'Invalid filename' }, { status: 400 });
     }
 
     const existed = fileStorage.has(sanitizedName);
-    
+
     if (!existed) {
-      return NextResponse.json(
-        { error: 'File not found' },
-        { status: 404 }
-      );
+      return NextResponse.json({ error: 'File not found' }, { status: 404 });
     }
 
     fileStorage.delete(sanitizedName);
@@ -218,7 +194,7 @@ export async function DELETE(request: NextRequest) {
     );
   } catch (error) {
     console.error('[API] Error deleting file:', error);
-    
+
     return NextResponse.json(
       { error: 'Internal server error while deleting file' },
       { status: 500 }

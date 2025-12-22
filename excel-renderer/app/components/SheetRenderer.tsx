@@ -52,41 +52,41 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
 
   const getCellStyle = (cell: XLSX.CellObject): CellStyle => {
     const style: CellStyle = {};
-    
+
     // Default styling for Excel-like appearance
     style.border = '1px solid #d0d0d0';
     style.fontFamily = 'Arial, sans-serif';
     style.fontSize = '11px';
-    
+
     // Check if cell has style information
     if (cell.s) {
       const cellStyle = cell.s as ExcelCellStyle;
-      
+
       // Background color
       if (cellStyle.fgColor?.rgb) {
         style.backgroundColor = `#${cellStyle.fgColor.rgb}`;
       }
-      
+
       // Font color
       if (cellStyle.font?.color?.rgb) {
         style.color = `#${cellStyle.font.color.rgb}`;
       }
-      
+
       // Font weight (bold)
       if (cellStyle.font?.bold) {
         style.fontWeight = 'bold';
       }
-      
+
       // Font style (italic)
       if (cellStyle.font?.italic) {
         style.fontStyle = 'italic';
       }
-      
+
       // Font size
       if (cellStyle.font?.sz) {
         style.fontSize = `${cellStyle.font.sz}px`;
       }
-      
+
       // Text alignment
       if (cellStyle.alignment?.horizontal) {
         const align = cellStyle.alignment.horizontal;
@@ -94,7 +94,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           style.textAlign = align;
         }
       }
-      
+
       // Border styling - handle each side individually
       if (cellStyle.border) {
         const borderStyle = '1px solid #000';
@@ -111,35 +111,39 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           style.borderRight = borderStyle;
         }
         // If any border is defined, remove the default border
-        if (cellStyle.border.top || cellStyle.border.bottom || 
-            cellStyle.border.left || cellStyle.border.right) {
+        if (
+          cellStyle.border.top ||
+          cellStyle.border.bottom ||
+          cellStyle.border.left ||
+          cellStyle.border.right
+        ) {
           delete style.border;
         }
       }
     }
-    
+
     return style;
   };
 
   const renderSheet = (sheetName: string, sheetIndex: number) => {
     const worksheet = workbook.Sheets[sheetName];
     const range = XLSX.utils.decode_range(worksheet['!ref'] || 'A1');
-    
+
     const rows = [];
-    
+
     for (let R = range.s.r; R <= range.e.r; ++R) {
       const row = [];
       for (let C = range.s.c; C <= range.e.c; ++C) {
         const cellAddress = XLSX.utils.encode_cell({ r: R, c: C });
         const cell = worksheet[cellAddress];
-        
+
         let cellValue = '';
         let cellStyle: CellStyle = {
           border: '1px solid #d0d0d0',
           fontFamily: 'Arial, sans-serif',
           fontSize: '11px',
         };
-        
+
         if (cell) {
           // Get cell value
           if (cell.f) {
@@ -147,11 +151,11 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           } else if (cell.v !== undefined) {
             cellValue = String(cell.v);
           }
-          
+
           // Get cell style
           cellStyle = { ...cellStyle, ...getCellStyle(cell) };
         }
-        
+
         row.push(
           <td
             key={`${R}-${C}`}
@@ -170,7 +174,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
       }
       rows.push(<tr key={R}>{row}</tr>);
     }
-    
+
     return (
       <div
         key={sheetIndex}
@@ -183,10 +187,12 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
         aria-labelledby={`sheet-tab-${sheetIndex}`}
         hidden={activeSheetIndex !== sheetIndex}
       >
-        <h3 className="text-xl font-semibold mb-4 text-gray-800">
-          Sheet: {sheetName}
-        </h3>
-        <div className="overflow-auto border border-gray-300 rounded bg-white" role="region" aria-label={`${sheetName} spreadsheet data`}>
+        <h3 className="text-xl font-semibold mb-4 text-gray-800">Sheet: {sheetName}</h3>
+        <div
+          className="overflow-auto border border-gray-300 rounded bg-white"
+          role="region"
+          aria-label={`${sheetName} spreadsheet data`}
+        >
           <table
             style={{
               borderCollapse: 'collapse',
@@ -204,10 +210,10 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
   };
 
   const handlePrint = () => {
-    trackEvent('PrintButtonClicked', { 
+    trackEvent('PrintButtonClicked', {
       printMode: 'browser',
       sheetCount: workbook.SheetNames.length,
-      activeSheet: workbook.SheetNames[activeSheetIndex]
+      activeSheet: workbook.SheetNames[activeSheetIndex],
     });
     window.print();
     onPrint();
@@ -215,13 +221,13 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
 
   const handlePrintAsImage = async () => {
     const startTime = Date.now();
-    
-    trackEvent('PrintButtonClicked', { 
+
+    trackEvent('PrintButtonClicked', {
       printMode: 'pixelPerfect',
       sheetCount: workbook.SheetNames.length,
-      activeSheet: workbook.SheetNames[activeSheetIndex]
+      activeSheet: workbook.SheetNames[activeSheetIndex],
     });
-    
+
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
       trackEvent('PrintFailed', { reason: 'Popup blocked' });
@@ -244,7 +250,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           // Temporarily show the sheet
           const originalDisplay = sheetElement.style.display;
           sheetElement.style.display = 'block';
-          
+
           const canvasStartTime = Date.now();
           const canvas = await html2canvas(sheetElement, {
             scale: 2,
@@ -252,14 +258,14 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
             backgroundColor: '#ffffff',
           });
           const canvasTime = Date.now() - canvasStartTime;
-          
+
           trackMetric('SheetToImageConversionTime', canvasTime, {
             sheetName: workbook.SheetNames[i],
-            sheetIndex: i.toString()
+            sheetIndex: i.toString(),
           });
-          
+
           sheetElement.style.display = originalDisplay;
-          
+
           const imgData = canvas.toDataURL('image/png');
           printWindow.document.write(`<div class="sheet-page">`);
           printWindow.document.write(`<h3>Sheet: ${workbook.SheetNames[i]}</h3>`);
@@ -270,7 +276,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           trackException(error as Error);
           trackEvent('SheetRenderingFailed', {
             sheetName: workbook.SheetNames[i],
-            sheetIndex: i.toString()
+            sheetIndex: i.toString(),
           });
         }
       }
@@ -278,17 +284,17 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
 
     printWindow.document.write('</body></html>');
     printWindow.document.close();
-    
+
     const totalTime = Date.now() - startTime;
     trackMetric('PixelPerfectPrintTotalTime', totalTime, {
-      sheetCount: workbook.SheetNames.length.toString()
+      sheetCount: workbook.SheetNames.length.toString(),
     });
     trackEvent('PrintSuccess', {
       printMode: 'pixelPerfect',
       sheetCount: workbook.SheetNames.length,
-      totalTimeMs: totalTime
+      totalTimeMs: totalTime,
     });
-    
+
     setTimeout(() => {
       printWindow.print();
       onPrint();
@@ -297,7 +303,11 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-6" role="region" aria-labelledby="sheets-preview-heading">
+      <div
+        className="bg-white rounded-lg shadow-lg p-6 mb-6"
+        role="region"
+        aria-labelledby="sheets-preview-heading"
+      >
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
           <h2 id="sheets-preview-heading" className="text-2xl font-bold text-gray-800">
             Excel Sheets Preview
@@ -332,7 +342,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
                   trackEvent('SheetNavigated', {
                     sheetName: name,
                     sheetIndex: index.toString(),
-                    totalSheets: workbook.SheetNames.length.toString()
+                    totalSheets: workbook.SheetNames.length.toString(),
                   });
                 }}
                 role="tab"
@@ -347,7 +357,7 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
               >
                 {name}
               </button>
-          ))}
+            ))}
           </div>
         </nav>
       </div>

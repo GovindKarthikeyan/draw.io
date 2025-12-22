@@ -19,11 +19,13 @@ Before deploying to IIS, ensure you have:
 #### Install IIS (if not already installed)
 
 **Windows Server:**
+
 ```powershell
 Install-WindowsFeature -name Web-Server -IncludeManagementTools
 ```
 
 **Windows 10/11:**
+
 - Go to Control Panel → Programs → Turn Windows features on or off
 - Enable "Internet Information Services"
 - Enable "World Wide Web Services"
@@ -33,6 +35,7 @@ Install-WindowsFeature -name Web-Server -IncludeManagementTools
 Download and install from: https://www.iis.net/downloads/microsoft/url-rewrite
 
 Or using Chocolatey:
+
 ```powershell
 choco install urlrewrite
 ```
@@ -42,6 +45,7 @@ choco install urlrewrite
 Download and install from: https://github.com/Azure/iisnode/releases
 
 Or using Chocolatey:
+
 ```powershell
 choco install iisnode
 ```
@@ -85,7 +89,7 @@ excel-renderer/
 3. Configure the site:
    - **Site name**: ExcelRenderer
    - **Physical path**: `C:\inetpub\wwwroot\excel-renderer`
-   - **Binding**: 
+   - **Binding**:
      - Type: http
      - Port: 80 (or your preferred port)
      - Host name: yourdomain.com (optional)
@@ -143,6 +147,7 @@ New-Item -Path "$path\iisnode" -ItemType Directory -Force
 This method uses iisnode to host the Node.js server within IIS.
 
 **Configuration:**
+
 - Use `web.config.iisnode` (renamed to `web.config`)
 - Runs `server.js` through iisnode
 - Better performance and process management
@@ -222,11 +227,13 @@ After deployment:
 ### Application doesn't start
 
 **Check iisnode logs:**
+
 ```
 C:\inetpub\wwwroot\excel-renderer\iisnode\*.log
 ```
 
 **Common issues:**
+
 - Node.js not in PATH: Add Node.js installation directory to system PATH
 - Missing dependencies: Run `npm install` in the deployment directory
 - Permissions: Ensure IIS AppPool identity has access to all files
@@ -258,6 +265,7 @@ C:\inetpub\wwwroot\excel-renderer\iisnode\*.log
 ## Security Best Practices
 
 1. **Enable HTTPS**: Obtain an SSL certificate and configure HTTPS binding
+
    ```powershell
    New-IISSiteBinding -Name "ExcelRenderer" -Protocol https -Port 443 -CertificateThumbPrint "YOUR_CERT_THUMBPRINT"
    ```
@@ -275,6 +283,7 @@ C:\inetpub\wwwroot\excel-renderer\iisnode\*.log
 ### Using iisnode
 
 Monitor through:
+
 - IIS Manager logs
 - iisnode logs in `/iisnode` directory
 - Windows Event Viewer
@@ -292,11 +301,13 @@ pm2 monit
 To update:
 
 1. Build the new version:
+
    ```bash
    npm run build
    ```
 
 2. Stop IIS site:
+
    ```powershell
    Stop-IISSite -Name "ExcelRenderer"
    ```
@@ -309,6 +320,7 @@ To update:
    ```
 
 For zero-downtime updates, consider using:
+
 - Multiple application pools with load balancing
 - Blue-green deployment strategy
 - IIS Application Initialization module
@@ -323,6 +335,7 @@ For zero-downtime updates, consider using:
 ## Support
 
 For issues specific to:
+
 - **IIS/Windows**: Check IIS logs and Windows Event Viewer
 - **Next.js**: Refer to Next.js documentation
 - **iisnode**: Check iisnode GitHub issues

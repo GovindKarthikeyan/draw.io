@@ -1,4 +1,4 @@
-@use "tailwindcss";
+@use 'tailwindcss';
 
 // CSS Variables
 :root {
@@ -76,12 +76,12 @@ body {
     background: white;
     color: black;
   }
-  
+
   button,
   .no-print {
     display: none !important;
   }
-  
+
   @page {
     margin: 0.5in;
   }

@@ -20,7 +20,7 @@ export async function GET() {
     );
   } catch (error) {
     console.error('Error listing files:', error);
-    
+
     return NextResponse.json(
       { error: 'Internal server error while listing files' },
       { status: 500 }

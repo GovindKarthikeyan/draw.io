@@ -9,10 +9,13 @@ let reactPlugin: ReactPlugin | null = null;
  * Initialize Application Insights for client-side tracking
  * This should be called once when the app starts
  */
-export function initializeAppInsights(): { appInsights: ApplicationInsights; reactPlugin: ReactPlugin } | null {
+export function initializeAppInsights(): {
+  appInsights: ApplicationInsights;
+  reactPlugin: ReactPlugin;
+} | null {
   // Get connection string from environment variable
   const connectionString = process.env.NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING;
-  
+
   if (!connectionString) {
     console.warn('Application Insights connection string not found. Telemetry disabled.');
     return null;
@@ -25,7 +28,7 @@ export function initializeAppInsights(): { appInsights: ApplicationInsights; rea
 
   if (!appInsights) {
     reactPlugin = new ReactPlugin();
-    
+
     appInsights = new ApplicationInsights({
       config: {
         connectionString: connectionString,
@@ -38,26 +41,26 @@ export function initializeAppInsights(): { appInsights: ApplicationInsights; rea
         disableExceptionTracking: false,
         autoTrackPageVisitTime: true,
         extensions: [reactPlugin],
-      }
+      },
     });
-    
+
     appInsights.loadAppInsights();
-    
+
     // Set authenticated user context if available
     appInsights.addTelemetryInitializer((envelope) => {
       envelope.tags = envelope.tags || [];
       envelope.tags['ai.cloud.role'] = 'excel-renderer-client';
       envelope.tags['ai.cloud.roleInstance'] = window.location.hostname;
     });
-    
+
     console.log('Application Insights initialized for client-side tracking');
   }
-  
+
   // TypeScript guard - both should be initialized together
   if (!appInsights || !reactPlugin) {
     return null;
   }
-  
+
   return { appInsights, reactPlugin };
 }
 
@@ -89,9 +92,9 @@ export function trackEvent(name: string, properties?: { [key: string]: any }) {
  */
 export function trackException(error: Error, severityLevel?: number) {
   if (appInsights) {
-    appInsights.trackException({ 
+    appInsights.trackException({
       exception: error,
-      severityLevel: severityLevel || 3 // Error level
+      severityLevel: severityLevel || 3, // Error level
     });
   }
 }
@@ -117,12 +120,19 @@ export function trackPageView(name?: string, uri?: string) {
 /**
  * Track custom trace/log
  */
-export function trackTrace(message: string, severityLevel?: number, properties?: { [key: string]: any }) {
+export function trackTrace(
+  message: string,
+  severityLevel?: number,
+  properties?: { [key: string]: any }
+) {
   if (appInsights) {
-    appInsights.trackTrace({ 
-      message,
-      severityLevel: severityLevel || 1 // Informational level
-    }, properties);
+    appInsights.trackTrace(
+      {
+        message,
+        severityLevel: severityLevel || 1, // Informational level
+      },
+      properties
+    );
   }
 }
 

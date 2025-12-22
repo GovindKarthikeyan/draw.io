@@ -10,9 +10,11 @@ let client: appInsights.TelemetryClient | null = null;
 export function initializeServerAppInsights(): appInsights.TelemetryClient | null {
   // Get connection string from environment variable
   const connectionString = process.env.APPINSIGHTS_CONNECTION_STRING;
-  
+
   if (!connectionString) {
-    console.warn('Server Application Insights connection string not found. Server-side telemetry disabled.');
+    console.warn(
+      'Server Application Insights connection string not found. Server-side telemetry disabled.'
+    );
     return null;
   }
 
@@ -22,7 +24,8 @@ export function initializeServerAppInsights(): appInsights.TelemetryClient | nul
 
   try {
     // Setup Application Insights
-    appInsights.setup(connectionString)
+    appInsights
+      .setup(connectionString)
       .setAutoDependencyCorrelation(true)
       .setAutoCollectRequests(true)
       .setAutoCollectPerformance(true, true)
@@ -35,13 +38,14 @@ export function initializeServerAppInsights(): appInsights.TelemetryClient | nul
       .start();
 
     client = appInsights.defaultClient;
-    
+
     // Set cloud role
     client.context.tags[client.context.keys.cloudRole] = 'excel-renderer-server';
-    client.context.tags[client.context.keys.cloudRoleInstance] = process.env.COMPUTERNAME || 'server-instance';
-    
+    client.context.tags[client.context.keys.cloudRoleInstance] =
+      process.env.COMPUTERNAME || 'server-instance';
+
     console.log('Application Insights initialized for server-side tracking');
-    
+
     return client;
   } catch (error) {
     console.error('Failed to initialize server Application Insights:', error);
@@ -77,7 +81,11 @@ export function trackServerException(error: Error, properties?: { [key: string]:
 /**
  * Track a custom metric on the server
  */
-export function trackServerMetric(name: string, value: number, properties?: { [key: string]: string }) {
+export function trackServerMetric(
+  name: string,
+  value: number,
+  properties?: { [key: string]: string }
+) {
   if (client) {
     client.trackMetric({ name, value, properties });
   }
@@ -88,9 +96,9 @@ export function trackServerMetric(name: string, value: number, properties?: { [k
  */
 export function trackServerTrace(message: string, properties?: { [key: string]: string }) {
   if (client) {
-    client.trackTrace({ 
-      message, 
-      properties 
+    client.trackTrace({
+      message,
+      properties,
     });
   }
 }
@@ -113,7 +121,7 @@ export function trackServerDependency(
       data,
       duration,
       success,
-      resultCode: resultCode?.toString()
+      resultCode: resultCode?.toString(),
     });
   }
 }

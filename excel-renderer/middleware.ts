@@ -7,19 +7,21 @@ import type { NextRequest } from 'next/server';
 
 export function middleware(request: NextRequest) {
   const start = Date.now();
-  
+
   // Clone the response
   const response = NextResponse.next();
-  
+
   // Add custom headers for tracking
   response.headers.set('x-request-id', crypto.randomUUID());
   response.headers.set('x-request-start', start.toString());
-  
+
   // Log middleware execution (will be picked up by server-side App Insights if configured)
   if (process.env.NODE_ENV === 'production') {
-    console.log(`[Middleware] ${request.method} ${request.url} - Started at ${new Date(start).toISOString()}`);
+    console.log(
+      `[Middleware] ${request.method} ${request.url} - Started at ${new Date(start).toISOString()}`
+    );
   }
-  
+
   return response;
 }
 

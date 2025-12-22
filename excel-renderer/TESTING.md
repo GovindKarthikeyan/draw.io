@@ -17,7 +17,9 @@ This project uses **Jest** and **React Testing Library (RTL)** for comprehensive
 ### Components (`app/components/__tests__/`)
 
 #### ExcelUploader.test.tsx
+
 Comprehensive tests for the Excel file upload component:
+
 - ✅ Rendering and accessibility (ARIA labels, keyboard navigation)
 - ✅ File input triggering and validation
 - ✅ File type validation (.xlsx, .xls, .xlsm)
@@ -30,7 +32,9 @@ Comprehensive tests for the Excel file upload component:
 **Test Cases**: 13 tests covering all user interactions and edge cases
 
 #### SheetRenderer.test.tsx
+
 Comprehensive tests for the sheet rendering and printing component:
+
 - ✅ Sheet tab rendering for multiple sheets
 - ✅ Active sheet content display
 - ✅ Sheet navigation and tab switching
@@ -50,7 +54,9 @@ Comprehensive tests for the sheet rendering and printing component:
 ### API Routes (`app/api/files/__tests__/`)
 
 #### route.test.ts
+
 Comprehensive tests for the file storage API:
+
 - ✅ POST: File upload with validation
 - ✅ POST: Multiple file format support (.xlsx, .xls, .xlsm, .csv, .pdf)
 - ✅ POST: File size limits (50MB)
@@ -69,7 +75,9 @@ Comprehensive tests for the file storage API:
 ### Utilities (`lib/__tests__/`)
 
 #### appInsights.client.test.ts
+
 Tests for Application Insights telemetry client:
+
 - ✅ Event tracking with properties
 - ✅ Exception tracking
 - ✅ Metric tracking (positive, zero, negative values)
@@ -80,21 +88,25 @@ Tests for Application Insights telemetry client:
 ## Running Tests
 
 ### Run All Tests
+
 ```bash
 npm test
 ```
 
 ### Watch Mode (for development)
+
 ```bash
 npm run test:watch
 ```
 
 ### Coverage Report
+
 ```bash
 npm run test:coverage
 ```
 
 ### CI Mode (for continuous integration)
+
 ```bash
 npm run test:ci
 ```
@@ -102,6 +114,7 @@ npm run test:ci
 ## Test Configuration
 
 ### jest.config.js
+
 - **Test Environment**: jsdom (browser-like environment)
 - **Setup Files**: jest.setup.js (global mocks and configuration)
 - **Module Name Mapper**: Resolves `@/` imports to root directory
@@ -109,7 +122,9 @@ npm run test:ci
 - **Test Match Patterns**: `**/__tests__/**/*.[jt]s?(x)`, `**/?(*.)+(spec|test).[jt]s?(x)`
 
 ### jest.setup.js
+
 Global test setup including:
+
 - Application Insights mocks
 - html2canvas mock
 - window.print() mock
@@ -119,7 +134,9 @@ Global test setup including:
 ## Mocking Strategy
 
 ### Application Insights
+
 All Application Insights functions are mocked to prevent actual telemetry during tests:
+
 ```typescript
 jest.mock('@/lib/appInsights.client', () => ({
   trackEvent: jest.fn(),
@@ -130,18 +147,24 @@ jest.mock('@/lib/appInsights.client', () => ({
 ```
 
 ### html2canvas
+
 Mocked to return a mock canvas object:
+
 ```typescript
 jest.mock('html2canvas', () => {
-  return jest.fn(() => Promise.resolve({
-    toDataURL: () => 'data:image/png;base64,mock',
-    style: {},
-  }));
+  return jest.fn(() =>
+    Promise.resolve({
+      toDataURL: () => 'data:image/png;base64,mock',
+      style: {},
+    })
+  );
 });
 ```
 
 ### window.print()
+
 Mocked globally to prevent actual print dialogs:
+
 ```typescript
 global.print = jest.fn();
 ```
@@ -149,14 +172,18 @@ global.print = jest.fn();
 ## Testing Best Practices
 
 ### 1. Accessibility Testing
+
 All component tests verify:
+
 - ARIA attributes (role, aria-label, aria-selected, etc.)
 - Keyboard navigation (tab, enter, space keys)
 - Focus management
 - Semantic HTML structure
 
 ### 2. User Interaction Testing
+
 Uses `@testing-library/user-event` for realistic user interactions:
+
 ```typescript
 const user = userEvent.setup();
 await user.click(button);
@@ -165,7 +192,9 @@ await user.tab();
 ```
 
 ### 3. Async Testing
+
 Uses `waitFor` for async operations:
+
 ```typescript
 await waitFor(() => {
   expect(mockFunction).toHaveBeenCalled();
@@ -173,14 +202,18 @@ await waitFor(() => {
 ```
 
 ### 4. Error Handling
+
 Tests verify both success and error scenarios:
+
 - Happy path (successful operations)
 - Edge cases (empty inputs, boundary values)
 - Error conditions (network failures, invalid data)
 - Error messages (user-friendly, no sensitive data)
 
 ### 5. Security Testing
+
 API tests verify:
+
 - Input validation
 - Path traversal prevention
 - Filename sanitization
@@ -190,11 +223,14 @@ API tests verify:
 ## Coverage Reports
 
 After running `npm run test:coverage`, view the coverage report:
+
 - **Terminal**: Summary displayed in console
 - **HTML Report**: Open `coverage/lcov-report/index.html` in browser
 
 ### Coverage Thresholds
+
 The project maintains 70% minimum coverage for:
+
 - **Branches**: Conditional logic paths
 - **Functions**: Function execution
 - **Lines**: Code line execution
@@ -203,15 +239,17 @@ The project maintains 70% minimum coverage for:
 ## Continuous Integration
 
 The `test:ci` script is optimized for CI environments:
+
 - Runs in non-interactive mode (`--ci`)
 - Generates coverage reports
 - Uses limited workers for memory efficiency (`--maxWorkers=2`)
 
 ### Example CI Configuration (GitHub Actions)
+
 ```yaml
 - name: Run tests
   run: npm run test:ci
-  
+
 - name: Upload coverage
   uses: codecov/codecov-action@v3
   with:
@@ -221,6 +259,7 @@ The `test:ci` script is optimized for CI environments:
 ## Writing New Tests
 
 ### Component Test Template
+
 ```typescript
 import { render, screen, fireEvent, waitFor } from '@testing-library/react';
 import userEvent from '@testing-library/user-event';
@@ -235,10 +274,10 @@ describe('YourComponent', () => {
   it('handles user interaction', async () => {
     const user = userEvent.setup();
     render(<YourComponent />);
-    
+
     const button = screen.getByRole('button');
     await user.click(button);
-    
+
     await waitFor(() => {
       expect(mockFunction).toHaveBeenCalled();
     });
@@ -247,6 +286,7 @@ describe('YourComponent', () => {
 ```
 
 ### API Test Template
+
 ```typescript
 import { NextRequest } from 'next/server';
 import { GET, POST } from '../route';
@@ -256,7 +296,7 @@ describe('API Route', () => {
     const request = new NextRequest('http://localhost:3000/api/endpoint');
     const response = await GET(request);
     const data = await response.json();
-    
+
     expect(response.status).toBe(200);
     expect(data).toEqual(expectedData);
   });
@@ -266,22 +306,27 @@ describe('API Route', () => {
 ## Debugging Tests
 
 ### Run Single Test File
+
 ```bash
 npm test -- ExcelUploader.test.tsx
 ```
 
 ### Run Tests Matching Pattern
+
 ```bash
 npm test -- --testNamePattern="handles file upload"
 ```
 
 ### Verbose Output
+
 ```bash
 npm test -- --verbose
 ```
 
 ### Debug in VS Code
+
 Add to `.vscode/launch.json`:
+
 ```json
 {
   "type": "node",
@@ -297,16 +342,19 @@ Add to `.vscode/launch.json`:
 ## Test Maintenance
 
 ### Update Snapshots (if using)
+
 ```bash
 npm test -- -u
 ```
 
 ### Clear Jest Cache
+
 ```bash
 npx jest --clearCache
 ```
 
 ### Check for Outdated Dependencies
+
 ```bash
 npm outdated
 ```
@@ -314,7 +362,9 @@ npm outdated
 ## Known Issues & Limitations
 
 ### Next.js Image Component
+
 The Next.js `<Image>` component requires additional mocking in tests. If testing components with images, add to jest.setup.js:
+
 ```typescript
 jest.mock('next/image', () => ({
   __esModule: true,
@@ -323,9 +373,11 @@ jest.mock('next/image', () => ({
 ```
 
 ### Application Insights
+
 Actual Application Insights connections are mocked in tests. For integration testing with real telemetry, use separate end-to-end tests.
 
 ### File Upload Testing
+
 Browser file upload behavior is mocked. Real file upload testing requires end-to-end tests with tools like Playwright or Cypress.
 
 ## Resources
@@ -346,6 +398,7 @@ Browser file upload behavior is mocked. Real file upload testing requires end-to
 ## Support
 
 For questions or issues with tests:
+
 1. Check this documentation
 2. Review existing test files for examples
 3. Consult official documentation for Jest and RTL

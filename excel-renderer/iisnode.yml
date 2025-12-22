@@ -26,7 +26,7 @@ initialRequestBufferSize: 4096
 maxRequestBufferSize: 65536
 
 # File watching for auto-restart
-watchedFiles: *.js;iisnode.yml
+watchedFiles: '*.js;iisnode.yml'
 uncFileChangesPollingInterval: 5000
 
 # Graceful shutdown
@@ -47,4 +47,4 @@ flushResponse: false
 enableXFF: false
 
 # Additional settings
-promoteServerVars: ""
+promoteServerVars: ''

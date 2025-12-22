@@ -22,7 +22,7 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
     trackEvent('ExcelFileUploadAttempt', {
       fileName: file.name,
       fileSize: file.size,
-      fileType: file.type
+      fileType: file.type,
     });
 
     // Validate file type
@@ -31,11 +31,11 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
       'application/vnd.openxmlformats-officedocument.spreadsheetml.sheet',
       'application/vnd.ms-excel.sheet.macroEnabled.12',
     ];
-    
+
     if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|xlsm)$/i)) {
       trackEvent('ExcelFileUploadFailed', {
         fileName: file.name,
-        reason: 'Invalid file type'
+        reason: 'Invalid file type',
       });
       alert('Please select a valid Excel file (.xlsx, .xls, .xlsm)');
       return;
@@ -48,42 +48,42 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
     reader.onload = (e) => {
       try {
         const data = e.target?.result;
-        const workbook = XLSX.read(data, { 
+        const workbook = XLSX.read(data, {
           type: 'array',
           cellStyles: true,
           cellHTML: true,
           cellNF: true,
-          cellDates: true
+          cellDates: true,
         });
-        
+
         const loadTime = Date.now() - startTime;
-        
+
         // Track successful file load
         trackEvent('ExcelFileUploadSuccess', {
           fileName: file.name,
           fileSize: file.size,
           sheetCount: workbook.SheetNames.length,
-          loadTimeMs: loadTime
+          loadTimeMs: loadTime,
         });
-        
+
         // Track load time metric
         trackMetric('ExcelFileLoadTime', loadTime, {
           fileName: file.name,
-          fileSize: file.size.toString()
+          fileSize: file.size.toString(),
         });
-        
+
         onFileLoaded(workbook);
       } catch (error) {
         console.error('Error reading Excel file:', error);
-        
+
         // Track exception
         trackException(error as Error);
         trackEvent('ExcelFileUploadFailed', {
           fileName: file.name,
           reason: 'Parse error',
-          error: (error as Error).message
+          error: (error as Error).message,
         });
-        
+
         alert('Error reading Excel file. Please try again.');
       }
     };
@@ -96,14 +96,18 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
   };
 
   return (
-    <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg" role="region" aria-labelledby="upload-title">
+    <div
+      className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg"
+      role="region"
+      aria-labelledby="upload-title"
+    >
       <h2 id="upload-title" className="text-2xl font-bold mb-4 text-gray-800">
         Upload Excel File
       </h2>
       <p className="text-gray-600 mb-4">
         Select an Excel file to view and print with exact formatting
       </p>
-      
+
       <input
         ref={fileInputRef}
         type="file"
@@ -113,7 +117,7 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
         id="file-input"
         aria-label="Choose Excel file to upload"
       />
-      
+
       <button
         onClick={handleButtonClick}
         className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
@@ -122,9 +126,9 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
       >
         Choose Excel File
       </button>
-      
+
       {fileName && (
-        <div 
+        <div
           className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
           role="status"
           aria-live="polite"
@@ -134,15 +138,11 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
           </p>
         </div>
       )}
-      
+
       {/* Accessible instructions */}
       <div className="mt-4 text-xs text-gray-500">
-        <p>
-          Supported formats: Excel 2007+ (.xlsx), Excel 97-2003 (.xls), Macro-enabled (.xlsm)
-        </p>
-        <p className="mt-1">
-          Maximum file size: 50MB
-        </p>
+        <p>Supported formats: Excel 2007+ (.xlsx), Excel 97-2003 (.xls), Macro-enabled (.xlsm)</p>
+        <p className="mt-1">Maximum file size: 50MB</p>
       </div>
     </div>
   );

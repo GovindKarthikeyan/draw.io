@@ -7,7 +7,7 @@ describe('File API Security Functions', () => {
   describe('sanitizeFilename', () => {
     // We'll test the sanitization function directly if it's exported
     // For full API route testing, use integration tests with a running server
-    
+
     it('basic functionality test', () => {
       // This is a placeholder for the actual sanitization tests
       // The actual function is not exported, so we test the behavior through API calls
@@ -55,8 +55,8 @@ describe('/api/files API Route Documentation', () => {
         '..\\..\\..\\windows\\system32\\config\\sam',
         'test!@#$%^&*()file.txt',
       ];
-      
-      dangerousFilenames.forEach(filename => {
+
+      dangerousFilenames.forEach((filename) => {
         // After sanitization, these should not contain dangerous patterns
         expect(filename).toBeDefined();
       });
@@ -121,13 +121,9 @@ describe('/api/files API Route Documentation', () => {
 
     it('should return generic error messages', () => {
       // Error messages should not expose internal details
-      const genericErrors = [
-        'Invalid file type',
-        'File not found',
-        'Internal server error',
-      ];
-      
-      genericErrors.forEach(error => {
+      const genericErrors = ['Invalid file type', 'File not found', 'Internal server error'];
+
+      genericErrors.forEach((error) => {
         expect(error).not.toContain('stack');
         expect(error).not.toContain('Error:');
       });
@@ -147,4 +143,3 @@ describe('/api/files API Route Documentation', () => {
 //     expect(res._getStatusCode()).toBe(200);
 //   });
 // });
-

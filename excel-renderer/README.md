@@ -13,12 +13,59 @@ A Next.js application that allows users to upload Excel files and view them with
 - 📱 **Responsive Design**: Works on desktop and mobile devices
 - 🔒 **Security-First**: Built with security best practices (see [SECURITY.md](./SECURITY.md))
 
+## Code Quality & Security
+
+This application implements enterprise-grade code quality and security practices:
+
+### Content Security Policy (CSP)
+
+- ✅ **Comprehensive CSP Headers**: Prevents XSS, code injection, and other security vulnerabilities
+- ✅ **Strict Default Policy**: `default-src 'self'` with specific allowances
+- ✅ **HTTPS Enforcement**: Upgrade insecure requests in production
+- ✅ **Frame Protection**: Prevents clickjacking attacks
+- ✅ **Additional Security Headers**: HSTS, X-Content-Type-Options, Referrer-Policy
+
+### ESLint Configuration
+
+- ✅ **TypeScript Rules**: Type safety and best practices
+- ✅ **React & Next.js Rules**: Framework-specific optimizations
+- ✅ **Accessibility Rules**: WCAG compliance checks
+- ✅ **Security Rules**: Prevents unsafe patterns
+- ✅ **Auto-fixable**: Many issues fixed automatically
+
+### Prettier Formatting
+
+- ✅ **Consistent Code Style**: Enforced formatting rules
+- ✅ **Auto-formatting**: Format on save in IDEs
+- ✅ **Integration**: Works seamlessly with ESLint
+- ✅ **Team Collaboration**: Eliminates style debates
+
+### Commands
+
+```bash
+# Linting
+npm run lint          # Check for issues
+npm run lint:fix      # Fix auto-fixable issues
+
+# Formatting
+npm run format        # Format all files
+npm run format:check  # Check formatting
+
+# Type checking
+npm run typecheck     # Run TypeScript compiler
+
+# Validation (runs all checks)
+npm run validate      # format:check + lint + typecheck + test:ci
+```
+
+For complete documentation, see [CODE_QUALITY.md](./CODE_QUALITY.md).
+
 ## Security Features
 
 This application implements comprehensive security best practices:
 
 - ✅ **Input Validation**: File type, size, and filename sanitization
-- ✅ **Security Headers**: X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- ✅ **Security Headers**: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, HSTS
 - ✅ **XSS Protection**: React's safe rendering, no eval() or innerHTML
 - ✅ **Path Traversal Prevention**: Filename sanitization for file operations
 - ✅ **Error Handling**: Generic error messages, no information disclosure
@@ -38,16 +85,19 @@ For complete security documentation and production hardening guide, see [SECURIT
 ### Installation
 
 1. Navigate to the excel-renderer directory:
+
    ```bash
    cd excel-renderer
    ```
 
 2. Install dependencies:
+
    ```bash
    npm install
    ```
 
 3. Run the development server:
+
    ```bash
    npm run dev
    ```
@@ -80,6 +130,7 @@ npm run test:ci
 ```
 
 **Test Coverage:**
+
 - Component tests (ExcelUploader, SheetRenderer)
 - API route tests (file upload, retrieval, deletion)
 - Utility tests (Application Insights telemetry)
@@ -93,6 +144,7 @@ For detailed testing documentation, see [TESTING.md](./TESTING.md).
 For deployment on Windows Server with IIS, see the [IIS Deployment Guide](./IIS_DEPLOYMENT.md).
 
 Quick start for IIS:
+
 ```bash
 npm run build
 # Copy files to IIS directory
@@ -106,7 +158,7 @@ npm run build
 2. **Select**: Choose an Excel file (.xlsx, .xls, or .xlsm format)
 3. **View**: The application will display all sheets with preserved formatting
 4. **Navigate**: Switch between sheets using the tab buttons
-5. **Print**: 
+5. **Print**:
    - Click "Print (Browser)" for standard printing
    - Click "Print (Pixel Perfect)" for image-based printing with exact formatting
 
@@ -126,6 +178,7 @@ npm run build
 This application is optimized for search engines and accessibility:
 
 **SEO Features:**
+
 - Comprehensive meta tags and Open Graph/Twitter Card support
 - Structured data (Schema.org JSON-LD)
 - Semantic HTML5 elements
@@ -134,6 +187,7 @@ This application is optimized for search engines and accessibility:
 - Optimized page titles and descriptions
 
 **Accessibility Features (WCAG 2.1 Level AA):**
+
 - Keyboard navigation support with visible focus indicators
 - Screen reader compatibility with ARIA attributes
 - Skip to main content link
@@ -148,6 +202,7 @@ See [SEO_ACCESSIBILITY.md](./SEO_ACCESSIBILITY.md) for complete documentation.
 ## Monitoring and Telemetry
 
 This application includes optional Azure Application Insights integration for:
+
 - Client-side telemetry (page views, events, errors)
 - Server-side telemetry (requests, performance, dependencies)
 - Middleware tracking (request correlation)
@@ -157,6 +212,7 @@ See [APPINSIGHTS.md](./APPINSIGHTS.md) for setup and configuration instructions.
 ## File Storage API
 
 The application includes REST API endpoints for storing and retrieving files:
+
 - **POST /api/files** - Upload Excel, CSV, or PDF files (stored as base64)
 - **GET /api/files?filename={name}** - Retrieve file by filename
 - **DELETE /api/files?filename={name}** - Delete a stored file
@@ -206,10 +262,12 @@ excel-renderer/
 ⚠️ **Known Dependency Vulnerabilities**
 
 The `xlsx` library (v0.18.5) has known vulnerabilities:
+
 - **Prototype Pollution** (GHSA-4r6h-8v6p-xvw6) - High severity
 - **Regular Expression Denial of Service** (GHSA-5pgg-2g8v-p4x9) - High severity
 
-**Mitigation**: 
+**Mitigation**:
+
 - This is a client-side application where users process their own files locally
 - Files are not uploaded to a server or processed server-side
 - The risk is limited to the user's own browser session
@@ -219,6 +277,7 @@ The `xlsx` library (v0.18.5) has known vulnerabilities:
 ## Browser Support
 
 The application works in all modern browsers:
+
 - Chrome/Edge (recommended)
 - Firefox
 - Safari

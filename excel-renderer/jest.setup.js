@@ -1,5 +1,5 @@
 // Learn more: https://github.com/testing-library/jest-dom
-import '@testing-library/jest-dom'
+import '@testing-library/jest-dom';
 
 // Mock Application Insights to avoid errors in tests
 jest.mock('@/lib/appInsights.client', () => ({
@@ -20,10 +20,12 @@ jest.mock('@/lib/appInsights.server', () => ({
 
 // Mock html2canvas
 jest.mock('html2canvas', () => {
-  return jest.fn(() => Promise.resolve({
-    toDataURL: () => 'data:image/png;base64,mock',
-    style: {},
-  }));
+  return jest.fn(() =>
+    Promise.resolve({
+      toDataURL: () => 'data:image/png;base64,mock',
+      style: {},
+    })
+  );
 });
 
 // Mock window.print
@@ -32,7 +34,7 @@ global.print = jest.fn();
 // Mock window.matchMedia
 Object.defineProperty(window, 'matchMedia', {
   writable: true,
-  value: jest.fn().mockImplementation(query => ({
+  value: jest.fn().mockImplementation((query) => ({
     matches: false,
     media: query,
     onchange: null,
@@ -49,7 +51,7 @@ class MockFileReader {
   onload = null;
   onerror = null;
   result = null;
-  
+
   readAsArrayBuffer(blob) {
     setTimeout(() => {
       this.result = new ArrayBuffer(8);
@@ -58,10 +60,11 @@ class MockFileReader {
       }
     }, 0);
   }
-  
+
   readAsDataURL(blob) {
     setTimeout(() => {
-      this.result = 'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,mock';
+      this.result =
+        'data:application/vnd.openxmlformats-officedocument.spreadsheetml.sheet;base64,mock';
       if (this.onload) {
         this.onload({ target: { result: this.result } });
       }

@@ -5,6 +5,7 @@ This application includes comprehensive Azure Application Insights telemetry for
 ## Features
 
 ### Client-Side Telemetry
+
 - Automatic page view tracking
 - Route change tracking
 - Exception tracking
@@ -13,6 +14,7 @@ This application includes comprehensive Azure Application Insights telemetry for
 - User session tracking
 
 ### Server-Side Telemetry
+
 - HTTP request tracking
 - Performance monitoring
 - Dependency tracking
@@ -20,6 +22,7 @@ This application includes comprehensive Azure Application Insights telemetry for
 - Custom logging
 
 ### Middleware Telemetry
+
 - Request tracking with unique IDs
 - Request timing
 - Automatic correlation between client and server
@@ -60,6 +63,7 @@ npm start
 ### Client-Side Events
 
 #### File Upload
+
 - **ExcelFileUploadButtonClicked** - User clicks the upload button
 - **ExcelFileUploadAttempt** - File selection started
   - Properties: fileName, fileSize, fileType
@@ -69,10 +73,12 @@ npm start
   - Properties: fileName, reason, error
 
 #### Sheet Navigation
+
 - **SheetNavigated** - User switches between sheets
   - Properties: sheetName, sheetIndex, totalSheets
 
 #### Printing
+
 - **PrintButtonClicked** - User clicks print button
   - Properties: printMode (browser/pixelPerfect), sheetCount, activeSheet
 - **PrintSuccess** - Print operation completed
@@ -81,9 +87,11 @@ npm start
   - Properties: reason
 
 #### Page Views
+
 - **Home** - Main page view
 
 #### Other
+
 - **WorkbookLoaded** - Excel workbook loaded into viewer
   - Properties: sheetCount
 - **UploadDifferentFileClicked** - User returns to upload screen
@@ -100,6 +108,7 @@ npm start
 ### Exceptions
 
 All JavaScript errors and unhandled exceptions are automatically tracked with:
+
 - Error message
 - Stack trace
 - Component information (when available)
@@ -130,6 +139,7 @@ All JavaScript errors and unhandled exceptions are automatically tracked with:
 ### Kusto Query Language (KQL) Examples
 
 #### View all custom events
+
 ```kql
 customEvents
 | where timestamp > ago(24h)
@@ -138,6 +148,7 @@ customEvents
 ```
 
 #### File upload success rate
+
 ```kql
 customEvents
 | where name in ("ExcelFileUploadSuccess", "ExcelFileUploadFailed")
@@ -147,6 +158,7 @@ customEvents
 ```
 
 #### Average file load time
+
 ```kql
 customMetrics
 | where name == "ExcelFileLoadTime"
@@ -154,6 +166,7 @@ customMetrics
 ```
 
 #### Print mode usage
+
 ```kql
 customEvents
 | where name == "PrintButtonClicked"
@@ -162,6 +175,7 @@ customEvents
 ```
 
 #### Sheet navigation patterns
+
 ```kql
 customEvents
 | where name == "SheetNavigated"
@@ -171,6 +185,7 @@ customEvents
 ```
 
 #### Error tracking
+
 ```kql
 exceptions
 | where timestamp > ago(24h)
@@ -186,6 +201,7 @@ To disable Application Insights:
 2. Restart the application
 
 The application will log a warning but continue to work normally:
+
 ```
 Application Insights connection string not found. Telemetry disabled.
 ```
@@ -193,6 +209,7 @@ Application Insights connection string not found. Telemetry disabled.
 ## Privacy Considerations
 
 Application Insights collects:
+
 - ✅ Anonymous usage statistics
 - ✅ Performance metrics
 - ✅ Error logs
@@ -209,12 +226,14 @@ Only metadata such as file sizes, sheet counts, and processing times are tracked
 When deploying to IIS, set environment variables using one of these methods:
 
 #### Method 1: iisnode.yml
+
 ```yaml
 node_env: production
 APPINSIGHTS_CONNECTION_STRING: InstrumentationKey=xxx...
 ```
 
 #### Method 2: web.config
+
 ```xml
 <configuration>
   <system.webServer>
@@ -229,6 +248,7 @@ APPINSIGHTS_CONNECTION_STRING: InstrumentationKey=xxx...
 ```
 
 #### Method 3: System Environment Variables
+
 ```powershell
 [System.Environment]::SetEnvironmentVariable("APPINSIGHTS_CONNECTION_STRING", "InstrumentationKey=xxx...", "Machine")
 ```
@@ -262,6 +282,7 @@ ENV NEXT_PUBLIC_APPINSIGHTS_CONNECTION_STRING=InstrumentationKey=xxx...
 3. **Restart the application** after changing environment variables
 
 4. **Check browser console** for initialization messages:
+
    ```
    Application Insights initialized for client-side tracking
    ```
@@ -317,6 +338,7 @@ trackServerMetric('ServerCustomMetric', 123);
 ### Telemetry Correlation
 
 Client and server telemetry is automatically correlated using:
+
 - Operation IDs
 - Request IDs
 - Session IDs
@@ -333,6 +355,7 @@ This allows you to trace a user's journey across client and server.
 ## Support
 
 For issues with:
+
 - **Application Insights setup**: Check Azure documentation
 - **Integration issues**: Check this documentation
 - **Custom telemetry**: Refer to helper function examples above

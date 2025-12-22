@@ -11,11 +11,13 @@ This API provides endpoints for storing and retrieving Excel, CSV, and PDF files
 **Description:** Upload an Excel, CSV, or PDF file. The file content is stored as base64-encoded data.
 
 **Request:**
+
 - **Method:** POST
 - **Content-Type:** multipart/form-data
 - **Body:** Form data with `file` field containing the file to upload
 
 **Supported File Types:**
+
 - Excel: `.xlsx`, `.xls`, `.xlsm`
 - CSV: `.csv`
 - PDF: `.pdf`
@@ -23,12 +25,14 @@ This API provides endpoints for storing and retrieving Excel, CSV, and PDF files
 **File Size Limit:** 50MB
 
 **Example Request (using curl):**
+
 ```bash
 curl -X POST http://localhost:3000/api/files \
   -F "file=@path/to/your/file.xlsx"
 ```
 
 **Example Request (using JavaScript fetch):**
+
 ```javascript
 const formData = new FormData();
 formData.append('file', fileInput.files[0]);
@@ -43,6 +47,7 @@ console.log(result);
 ```
 
 **Success Response (201 Created):**
+
 ```json
 {
   "success": true,
@@ -56,6 +61,7 @@ console.log(result);
 **Error Responses:**
 
 400 Bad Request (Invalid Content-Type):
+
 ```json
 {
   "error": "Content-Type must be multipart/form-data"
@@ -63,6 +69,7 @@ console.log(result);
 ```
 
 400 Bad Request (No file provided):
+
 ```json
 {
   "error": "No file provided"
@@ -70,6 +77,7 @@ console.log(result);
 ```
 
 400 Bad Request (Invalid file type):
+
 ```json
 {
   "error": "Invalid file type. Only Excel (.xlsx, .xls, .xlsm), CSV (.csv), and PDF (.pdf) files are allowed"
@@ -77,6 +85,7 @@ console.log(result);
 ```
 
 413 Payload Too Large:
+
 ```json
 {
   "error": "File size exceeds 50MB limit"
@@ -84,6 +93,7 @@ console.log(result);
 ```
 
 500 Internal Server Error:
+
 ```json
 {
   "error": "Internal server error while uploading file"
@@ -99,16 +109,19 @@ console.log(result);
 **Description:** Retrieve a previously uploaded file by its filename. Returns the file content as base64-encoded data.
 
 **Request:**
+
 - **Method:** GET
 - **Query Parameters:**
   - `filename` (required): Name of the file to retrieve
 
 **Example Request (using curl):**
+
 ```bash
 curl -X GET "http://localhost:3000/api/files?filename=example.xlsx"
 ```
 
 **Example Request (using JavaScript fetch):**
+
 ```javascript
 const fileName = 'example.xlsx';
 const response = await fetch(`/api/files?filename=${encodeURIComponent(fileName)}`);
@@ -122,7 +135,7 @@ if (result.success) {
     bytes[i] = binaryString.charCodeAt(i);
   }
   const blob = new Blob([bytes], { type: result.mimeType });
-  
+
   // Create download link or process the file
   const url = URL.createObjectURL(blob);
   const a = document.createElement('a');
@@ -133,6 +146,7 @@ if (result.success) {
 ```
 
 **Success Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -146,6 +160,7 @@ if (result.success) {
 **Error Responses:**
 
 400 Bad Request (No filename provided):
+
 ```json
 {
   "error": "Filename parameter is required"
@@ -153,6 +168,7 @@ if (result.success) {
 ```
 
 404 Not Found:
+
 ```json
 {
   "error": "File not found"
@@ -160,6 +176,7 @@ if (result.success) {
 ```
 
 500 Internal Server Error:
+
 ```json
 {
   "error": "Internal server error while retrieving file"
@@ -175,16 +192,19 @@ if (result.success) {
 **Description:** Delete a previously uploaded file by its filename.
 
 **Request:**
+
 - **Method:** DELETE
 - **Query Parameters:**
   - `filename` (required): Name of the file to delete
 
 **Example Request (using curl):**
+
 ```bash
 curl -X DELETE "http://localhost:3000/api/files?filename=example.xlsx"
 ```
 
 **Example Request (using JavaScript fetch):**
+
 ```javascript
 const fileName = 'example.xlsx';
 const response = await fetch(`/api/files?filename=${encodeURIComponent(fileName)}`, {
@@ -195,6 +215,7 @@ console.log(result);
 ```
 
 **Success Response (200 OK):**
+
 ```json
 {
   "success": true,
@@ -205,6 +226,7 @@ console.log(result);
 **Error Responses:**
 
 400 Bad Request (No filename provided):
+
 ```json
 {
   "error": "Filename parameter is required"
@@ -212,6 +234,7 @@ console.log(result);
 ```
 
 404 Not Found:
+
 ```json
 {
   "error": "File not found"
@@ -219,6 +242,7 @@ console.log(result);
 ```
 
 500 Internal Server Error:
+
 ```json
 {
   "error": "Internal server error while deleting file"
@@ -234,14 +258,17 @@ console.log(result);
 **Description:** List all stored files (metadata only, no content). This is a placeholder endpoint for production implementation.
 
 **Request:**
+
 - **Method:** GET
 
 **Example Request (using curl):**
+
 ```bash
 curl -X GET "http://localhost:3000/api/files/list"
 ```
 
 **Response (200 OK):**
+
 ```json
 {
   "message": "List endpoint - integrate with your storage solution",
@@ -254,6 +281,7 @@ curl -X GET "http://localhost:3000/api/files/list"
 ## Storage Implementation
 
 **Current Implementation:**
+
 - Files are stored in-memory using a JavaScript `Map`
 - Data is lost when the server restarts
 - Not suitable for production use
@@ -263,7 +291,6 @@ curl -X GET "http://localhost:3000/api/files/list"
 1. **Database Storage:**
    - Use a database (PostgreSQL, MongoDB, MySQL) to store file metadata
    - Store base64 content in database or reference to file storage service
-   
 2. **Cloud Storage:**
    - Azure Blob Storage
    - AWS S3
@@ -276,6 +303,7 @@ curl -X GET "http://localhost:3000/api/files/list"
    - Keep file URLs/references in database
 
 **Example Database Schema:**
+
 ```sql
 CREATE TABLE files (
   id SERIAL PRIMARY KEY,
@@ -374,6 +402,7 @@ When moving to production:
 ## Support
 
 For issues or questions:
+
 - Check Application Insights for error logs
 - Review server logs for detailed error information
 - Ensure environment variables are properly configured
