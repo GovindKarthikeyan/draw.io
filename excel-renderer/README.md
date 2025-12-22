@@ -74,6 +74,16 @@ npm run build
 - **Tailwind CSS**: Utility-first CSS framework
 - **xlsx**: Excel file parsing library
 - **html2canvas**: HTML to image conversion for pixel-perfect printing
+- **Azure Application Insights**: Comprehensive telemetry and monitoring (optional)
+
+## Monitoring and Telemetry
+
+This application includes optional Azure Application Insights integration for:
+- Client-side telemetry (page views, events, errors)
+- Server-side telemetry (requests, performance, dependencies)
+- Middleware tracking (request correlation)
+
+See [APPINSIGHTS.md](./APPINSIGHTS.md) for setup and configuration instructions.
 
 ## File Structure
 

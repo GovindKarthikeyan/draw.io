@@ -1,5 +1,6 @@
 import type { Metadata } from "next";
 import "./globals.css";
+import AppInsightsProvider from "./components/AppInsightsProvider";
 
 export const metadata: Metadata = {
   title: "Excel File Renderer",
@@ -14,7 +15,9 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className="antialiased">
-        {children}
+        <AppInsightsProvider>
+          {children}
+        </AppInsightsProvider>
       </body>
     </html>
   );

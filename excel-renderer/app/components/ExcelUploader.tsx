@@ -2,6 +2,7 @@
 
 import React, { useState, useRef } from 'react';
 import * as XLSX from 'xlsx';
+import { trackEvent, trackException, trackMetric } from '@/lib/appInsights.client';
 
 interface ExcelUploaderProps {
   onFileLoaded: (workbook: XLSX.WorkBook) => void;
@@ -15,6 +16,15 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
     const file = event.target.files?.[0];
     if (!file) return;
 
+    const startTime = Date.now();
+
+    // Track file upload attempt
+    trackEvent('ExcelFileUploadAttempt', {
+      fileName: file.name,
+      fileSize: file.size,
+      fileType: file.type
+    });
+
     // Validate file type
     const validTypes = [
       'application/vnd.ms-excel',
@@ -23,6 +33,10 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
     ];
     
     if (!validTypes.includes(file.type) && !file.name.match(/\.(xlsx|xls|xlsm)$/i)) {
+      trackEvent('ExcelFileUploadFailed', {
+        fileName: file.name,
+        reason: 'Invalid file type'
+      });
       alert('Please select a valid Excel file (.xlsx, .xls, .xlsm)');
       return;
     }
@@ -41,9 +55,35 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
           cellNF: true,
           cellDates: true
         });
+        
+        const loadTime = Date.now() - startTime;
+        
+        // Track successful file load
+        trackEvent('ExcelFileUploadSuccess', {
+          fileName: file.name,
+          fileSize: file.size,
+          sheetCount: workbook.SheetNames.length,
+          loadTimeMs: loadTime
+        });
+        
+        // Track load time metric
+        trackMetric('ExcelFileLoadTime', loadTime, {
+          fileName: file.name,
+          fileSize: file.size.toString()
+        });
+        
         onFileLoaded(workbook);
       } catch (error) {
         console.error('Error reading Excel file:', error);
+        
+        // Track exception
+        trackException(error as Error);
+        trackEvent('ExcelFileUploadFailed', {
+          fileName: file.name,
+          reason: 'Parse error',
+          error: (error as Error).message
+        });
+        
         alert('Error reading Excel file. Please try again.');
       }
     };
@@ -51,6 +91,7 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
   };
 
   const handleButtonClick = () => {
+    trackEvent('ExcelFileUploadButtonClicked');
     fileInputRef.current?.click();
   };
 

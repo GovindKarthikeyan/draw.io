@@ -4,16 +4,30 @@ import React, { useState } from 'react';
 import * as XLSX from 'xlsx';
 import ExcelUploader from './components/ExcelUploader';
 import SheetRenderer from './components/SheetRenderer';
+import { trackEvent, trackPageView } from '@/lib/appInsights.client';
 
 export default function Home() {
   const [workbook, setWorkbook] = useState<XLSX.WorkBook | null>(null);
 
+  React.useEffect(() => {
+    // Track page view
+    trackPageView('Home', '/');
+  }, []);
+
   const handleFileLoaded = (wb: XLSX.WorkBook) => {
     setWorkbook(wb);
+    trackEvent('WorkbookLoaded', {
+      sheetCount: wb.SheetNames.length.toString()
+    });
   };
 
   const handlePrint = () => {
     console.log('Print initiated');
+  };
+  
+  const handleUploadDifferent = () => {
+    trackEvent('UploadDifferentFileClicked');
+    setWorkbook(null);
   };
 
   return (
@@ -35,7 +49,7 @@ export default function Home() {
             <div className="w-full">
               <div className="flex justify-center mb-4">
                 <button
-                  onClick={() => setWorkbook(null)}
+                  onClick={handleUploadDifferent}
                   className="bg-gray-600 hover:bg-gray-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
                 >
                   ← Upload Different File

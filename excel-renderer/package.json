@@ -10,6 +10,9 @@
     "lint": "eslint"
   },
   "dependencies": {
+    "@microsoft/applicationinsights-react-js": "^19.3.8",
+    "@microsoft/applicationinsights-web": "^3.3.10",
+    "applicationinsights": "^3.12.1",
     "html2canvas": "^1.4.1",
     "next": "16.1.1",
     "react": "19.2.3",

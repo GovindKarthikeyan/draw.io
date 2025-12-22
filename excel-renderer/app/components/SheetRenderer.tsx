@@ -3,6 +3,7 @@
 import React, { useRef, useEffect } from 'react';
 import * as XLSX from 'xlsx';
 import html2canvas from 'html2canvas';
+import { trackEvent, trackException, trackMetric } from '@/lib/appInsights.client';
 
 interface SheetRendererProps {
   workbook: XLSX.WorkBook;
@@ -198,13 +199,27 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
   };
 
   const handlePrint = () => {
+    trackEvent('PrintButtonClicked', { 
+      printMode: 'browser',
+      sheetCount: workbook.SheetNames.length,
+      activeSheet: workbook.SheetNames[activeSheetIndex]
+    });
     window.print();
     onPrint();
   };
 
   const handlePrintAsImage = async () => {
+    const startTime = Date.now();
+    
+    trackEvent('PrintButtonClicked', { 
+      printMode: 'pixelPerfect',
+      sheetCount: workbook.SheetNames.length,
+      activeSheet: workbook.SheetNames[activeSheetIndex]
+    });
+    
     const printWindow = window.open('', '_blank');
     if (!printWindow) {
+      trackEvent('PrintFailed', { reason: 'Popup blocked' });
       alert('Please allow pop-ups for this site to print');
       return;
     }
@@ -225,10 +240,17 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           const originalDisplay = sheetElement.style.display;
           sheetElement.style.display = 'block';
           
+          const canvasStartTime = Date.now();
           const canvas = await html2canvas(sheetElement, {
             scale: 2,
             logging: false,
             backgroundColor: '#ffffff',
+          });
+          const canvasTime = Date.now() - canvasStartTime;
+          
+          trackMetric('SheetToImageConversionTime', canvasTime, {
+            sheetName: workbook.SheetNames[i],
+            sheetIndex: i.toString()
           });
           
           sheetElement.style.display = originalDisplay;
@@ -240,12 +262,27 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           printWindow.document.write('</div>');
         } catch (error) {
           console.error('Error rendering sheet:', error);
+          trackException(error as Error);
+          trackEvent('SheetRenderingFailed', {
+            sheetName: workbook.SheetNames[i],
+            sheetIndex: i.toString()
+          });
         }
       }
     }
 
     printWindow.document.write('</body></html>');
     printWindow.document.close();
+    
+    const totalTime = Date.now() - startTime;
+    trackMetric('PixelPerfectPrintTotalTime', totalTime, {
+      sheetCount: workbook.SheetNames.length.toString()
+    });
+    trackEvent('PrintSuccess', {
+      printMode: 'pixelPerfect',
+      sheetCount: workbook.SheetNames.length,
+      totalTimeMs: totalTime
+    });
     
     setTimeout(() => {
       printWindow.print();
@@ -280,7 +317,14 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           {workbook.SheetNames.map((name, index) => (
             <button
               key={index}
-              onClick={() => setActiveSheetIndex(index)}
+              onClick={() => {
+                setActiveSheetIndex(index);
+                trackEvent('SheetNavigated', {
+                  sheetName: name,
+                  sheetIndex: index.toString(),
+                  totalSheets: workbook.SheetNames.length.toString()
+                });
+              }}
               className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
                 activeSheetIndex === index
                   ? 'bg-blue-600 text-white'
