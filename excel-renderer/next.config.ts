@@ -7,6 +7,8 @@ const nextConfig: NextConfig = {
   compress: true,
   // Configure trailing slashes for IIS compatibility
   trailingSlash: false,
+  // Add empty turbopack config to silence warnings
+  turbopack: {},
 };
 
 export default nextConfig;

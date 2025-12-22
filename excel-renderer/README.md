@@ -85,20 +85,45 @@ This application includes optional Azure Application Insights integration for:
 
 See [APPINSIGHTS.md](./APPINSIGHTS.md) for setup and configuration instructions.
 
+## File Storage API
+
+The application includes REST API endpoints for storing and retrieving files:
+- **POST /api/files** - Upload Excel, CSV, or PDF files (stored as base64)
+- **GET /api/files?filename={name}** - Retrieve file by filename
+- **DELETE /api/files?filename={name}** - Delete a stored file
+
+See [FILE_API.md](./FILE_API.md) for complete API documentation, examples, and production deployment recommendations.
+
+**Note:** Current implementation uses in-memory storage. For production, integrate with a database or cloud storage service.
+
 ## File Structure
 
 ```
 excel-renderer/
 ├── app/
+│   ├── api/
+│   │   └── files/              # File storage API endpoints
+│   │       ├── route.ts        # Upload/retrieve/delete files
+│   │       └── list/
+│   │           └── route.ts    # List all files
 │   ├── components/
-│   │   ├── ExcelUploader.tsx    # File upload component
-│   │   └── SheetRenderer.tsx    # Excel sheet display component
-│   ├── page.tsx                 # Main application page
-│   ├── layout.tsx               # Application layout
-│   └── globals.css              # Global styles
-├── public/                      # Static assets
-├── package.json                 # Dependencies and scripts
-└── README.md                    # This file
+│   │   ├── ExcelUploader.tsx   # File upload component
+│   │   ├── SheetRenderer.tsx   # Excel sheet display component
+│   │   └── AppInsightsProvider.tsx # Telemetry provider
+│   ├── page.tsx                # Main application page
+│   ├── layout.tsx              # Application layout
+│   └── globals.css             # Global styles
+├── lib/
+│   ├── appInsights.client.ts   # Client-side telemetry
+│   └── appInsights.server.ts   # Server-side telemetry
+├── middleware.ts               # Request tracking middleware
+├── public/                     # Static assets
+├── server.js                   # Custom server for IIS
+├── package.json                # Dependencies and scripts
+├── IIS_DEPLOYMENT.md           # IIS deployment guide
+├── APPINSIGHTS.md              # Telemetry documentation
+├── FILE_API.md                 # File API documentation
+└── README.md                   # This file
 ```
 
 ## Supported Excel Formats
