@@ -62,7 +62,6 @@ npm start
 - **Tailwind CSS**: Utility-first CSS framework
 - **xlsx**: Excel file parsing library
 - **html2canvas**: HTML to image conversion for pixel-perfect printing
-- **jspdf**: PDF generation (optional, for future enhancements)
 
 ## File Structure
 

@@ -16,8 +16,33 @@ interface CellStyle {
   fontStyle?: string;
   textAlign?: 'left' | 'center' | 'right' | 'justify';
   border?: string;
+  borderTop?: string;
+  borderBottom?: string;
+  borderLeft?: string;
+  borderRight?: string;
   fontSize?: string;
   fontFamily?: string;
+}
+
+// Interface for Excel cell style properties based on xlsx library
+interface ExcelCellStyle {
+  fgColor?: { rgb?: string };
+  font?: {
+    color?: { rgb?: string };
+    bold?: boolean;
+    italic?: boolean;
+    sz?: number;
+  };
+  alignment?: {
+    horizontal?: string;
+    vertical?: string;
+  };
+  border?: {
+    top?: { style?: string };
+    bottom?: { style?: string };
+    left?: { style?: string };
+    right?: { style?: string };
+  };
 }
 
 export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps) {
@@ -34,16 +59,16 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
     
     // Check if cell has style information
     if (cell.s) {
-      const cellStyle = cell.s as any;
+      const cellStyle = cell.s as ExcelCellStyle;
       
       // Background color
-      if (cellStyle.fgColor) {
-        style.backgroundColor = `#${cellStyle.fgColor.rgb || 'ffffff'}`;
+      if (cellStyle.fgColor?.rgb) {
+        style.backgroundColor = `#${cellStyle.fgColor.rgb}`;
       }
       
       // Font color
-      if (cellStyle.font?.color) {
-        style.color = `#${cellStyle.font.color.rgb || '000000'}`;
+      if (cellStyle.font?.color?.rgb) {
+        style.color = `#${cellStyle.font.color.rgb}`;
       }
       
       // Font weight (bold)
@@ -62,24 +87,32 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
       }
       
       // Text alignment
-      if (cellStyle.alignment) {
-        if (cellStyle.alignment.horizontal) {
-          const align = cellStyle.alignment.horizontal;
-          if (align === 'left' || align === 'center' || align === 'right' || align === 'justify') {
-            style.textAlign = align;
-          }
+      if (cellStyle.alignment?.horizontal) {
+        const align = cellStyle.alignment.horizontal;
+        if (align === 'left' || align === 'center' || align === 'right' || align === 'justify') {
+          style.textAlign = align;
         }
       }
       
-      // Border styling
+      // Border styling - handle each side individually
       if (cellStyle.border) {
-        const borderParts = [];
-        if (cellStyle.border.top) borderParts.push('1px solid #000');
-        if (cellStyle.border.bottom) borderParts.push('1px solid #000');
-        if (cellStyle.border.left) borderParts.push('1px solid #000');
-        if (cellStyle.border.right) borderParts.push('1px solid #000');
-        if (borderParts.length > 0) {
-          style.border = borderParts[0];
+        const borderStyle = '1px solid #000';
+        if (cellStyle.border.top) {
+          style.borderTop = borderStyle;
+        }
+        if (cellStyle.border.bottom) {
+          style.borderBottom = borderStyle;
+        }
+        if (cellStyle.border.left) {
+          style.borderLeft = borderStyle;
+        }
+        if (cellStyle.border.right) {
+          style.borderRight = borderStyle;
+        }
+        // If any border is defined, remove the default border
+        if (cellStyle.border.top || cellStyle.border.bottom || 
+            cellStyle.border.left || cellStyle.border.right) {
+          delete style.border;
         }
       }
     }
