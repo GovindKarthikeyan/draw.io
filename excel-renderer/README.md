@@ -45,6 +45,18 @@ npm run build
 npm start
 ```
 
+### Deploy to IIS (Windows Server)
+
+For deployment on Windows Server with IIS, see the [IIS Deployment Guide](./IIS_DEPLOYMENT.md).
+
+Quick start for IIS:
+```bash
+npm run build
+# Copy files to IIS directory
+# Rename web.config.iisnode to web.config
+# Configure IIS site
+```
+
 ## How to Use
 
 1. **Upload**: Click the "Choose Excel File" button to open a file dialog
