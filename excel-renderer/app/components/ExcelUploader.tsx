@@ -96,8 +96,10 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
   };
 
   return (
-    <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg">
-      <h2 className="text-2xl font-bold mb-4 text-gray-800">Upload Excel File</h2>
+    <div className="w-full max-w-md p-6 bg-white rounded-lg shadow-lg" role="region" aria-labelledby="upload-title">
+      <h2 id="upload-title" className="text-2xl font-bold mb-4 text-gray-800">
+        Upload Excel File
+      </h2>
       <p className="text-gray-600 mb-4">
         Select an Excel file to view and print with exact formatting
       </p>
@@ -105,25 +107,43 @@ export default function ExcelUploader({ onFileLoaded }: ExcelUploaderProps) {
       <input
         ref={fileInputRef}
         type="file"
-        accept=".xlsx,.xls,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet"
+        accept=".xlsx,.xls,.xlsm,application/vnd.ms-excel,application/vnd.openxmlformats-officedocument.spreadsheetml.sheet,application/vnd.ms-excel.sheet.macroEnabled.12"
         onChange={handleFileSelect}
         className="hidden"
+        id="file-input"
+        aria-label="Choose Excel file to upload"
       />
       
       <button
         onClick={handleButtonClick}
-        className="w-full bg-blue-600 hover:bg-blue-700 text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+        className="w-full bg-blue-600 hover:bg-blue-700 focus:ring-4 focus:ring-blue-300 focus:outline-none text-white font-semibold py-3 px-6 rounded-lg transition-colors duration-200"
+        aria-label="Click to choose an Excel file"
+        type="button"
       >
         Choose Excel File
       </button>
       
       {fileName && (
-        <div className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg">
+        <div 
+          className="mt-4 p-3 bg-green-50 border border-green-200 rounded-lg"
+          role="status"
+          aria-live="polite"
+        >
           <p className="text-sm text-green-800">
             <span className="font-semibold">Selected:</span> {fileName}
           </p>
         </div>
       )}
+      
+      {/* Accessible instructions */}
+      <div className="mt-4 text-xs text-gray-500">
+        <p>
+          Supported formats: Excel 2007+ (.xlsx), Excel 97-2003 (.xls), Macro-enabled (.xlsm)
+        </p>
+        <p className="mt-1">
+          Maximum file size: 50MB
+        </p>
+      </div>
     </div>
   );
 }

@@ -76,6 +76,30 @@ npm run build
 - **html2canvas**: HTML to image conversion for pixel-perfect printing
 - **Azure Application Insights**: Comprehensive telemetry and monitoring (optional)
 
+## SEO & Accessibility
+
+This application is optimized for search engines and accessibility:
+
+**SEO Features:**
+- Comprehensive meta tags and Open Graph/Twitter Card support
+- Structured data (Schema.org JSON-LD)
+- Semantic HTML5 elements
+- robots.txt and sitemap.xml
+- PWA manifest for progressive web app support
+- Optimized page titles and descriptions
+
+**Accessibility Features (WCAG 2.1 Level AA):**
+- Keyboard navigation support with visible focus indicators
+- Screen reader compatibility with ARIA attributes
+- Skip to main content link
+- Semantic HTML landmarks
+- High contrast mode support
+- Reduced motion preferences respected
+- Color contrast meeting WCAG standards
+- Descriptive button labels and alt text
+
+See [SEO_ACCESSIBILITY.md](./SEO_ACCESSIBILITY.md) for complete documentation.
+
 ## Monitoring and Telemetry
 
 This application includes optional Azure Application Insights integration for:

@@ -178,20 +178,25 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
           sheetRefs.current[sheetIndex] = el;
         }}
         className="sheet-container mb-8"
-        style={{ display: activeSheetIndex === sheetIndex ? 'block' : 'none' }}
+        role="tabpanel"
+        id={`sheet-panel-${sheetIndex}`}
+        aria-labelledby={`sheet-tab-${sheetIndex}`}
+        hidden={activeSheetIndex !== sheetIndex}
       >
         <h3 className="text-xl font-semibold mb-4 text-gray-800">
           Sheet: {sheetName}
         </h3>
-        <div className="overflow-auto border border-gray-300 rounded bg-white">
+        <div className="overflow-auto border border-gray-300 rounded bg-white" role="region" aria-label={`${sheetName} spreadsheet data`}>
           <table
             style={{
               borderCollapse: 'collapse',
               backgroundColor: 'white',
               width: '100%',
             }}
+            role="table"
+            aria-label={`Data table for ${sheetName}`}
           >
-            <tbody>{rows}</tbody>
+            <tbody role="rowgroup">{rows}</tbody>
           </table>
         </div>
       </div>
@@ -292,52 +297,62 @@ export default function SheetRenderer({ workbook, onPrint }: SheetRendererProps)
 
   return (
     <div className="w-full max-w-6xl mx-auto">
-      <div className="bg-white rounded-lg shadow-lg p-6 mb-6">
+      <div className="bg-white rounded-lg shadow-lg p-6 mb-6" role="region" aria-labelledby="sheets-preview-heading">
         <div className="flex flex-wrap items-center justify-between gap-4 mb-6">
-          <h2 className="text-2xl font-bold text-gray-800">
+          <h2 id="sheets-preview-heading" className="text-2xl font-bold text-gray-800">
             Excel Sheets Preview
           </h2>
-          <div className="flex gap-2">
+          <div className="flex gap-2" role="group" aria-label="Print options">
             <button
               onClick={handlePrint}
-              className="bg-green-600 hover:bg-green-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+              className="bg-green-600 hover:bg-green-700 focus:ring-4 focus:ring-green-300 focus:outline-none text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+              aria-label="Print using browser's native print dialog"
+              type="button"
             >
               Print (Browser)
             </button>
             <button
               onClick={handlePrintAsImage}
-              className="bg-purple-600 hover:bg-purple-700 text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+              className="bg-purple-600 hover:bg-purple-700 focus:ring-4 focus:ring-purple-300 focus:outline-none text-white font-semibold py-2 px-6 rounded-lg transition-colors duration-200"
+              aria-label="Print with pixel-perfect formatting by converting sheets to images"
+              type="button"
             >
               Print (Pixel Perfect)
             </button>
           </div>
         </div>
 
-        <div className="flex gap-2 mb-4 flex-wrap">
-          {workbook.SheetNames.map((name, index) => (
-            <button
-              key={index}
-              onClick={() => {
-                setActiveSheetIndex(index);
-                trackEvent('SheetNavigated', {
-                  sheetName: name,
-                  sheetIndex: index.toString(),
-                  totalSheets: workbook.SheetNames.length.toString()
-                });
-              }}
-              className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 ${
-                activeSheetIndex === index
-                  ? 'bg-blue-600 text-white'
-                  : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
-              }`}
-            >
-              {name}
-            </button>
+        <nav aria-label="Sheet navigation" className="mb-4">
+          <div className="flex gap-2 flex-wrap" role="tablist">
+            {workbook.SheetNames.map((name, index) => (
+              <button
+                key={index}
+                onClick={() => {
+                  setActiveSheetIndex(index);
+                  trackEvent('SheetNavigated', {
+                    sheetName: name,
+                    sheetIndex: index.toString(),
+                    totalSheets: workbook.SheetNames.length.toString()
+                  });
+                }}
+                role="tab"
+                aria-selected={activeSheetIndex === index}
+                aria-controls={`sheet-panel-${index}`}
+                id={`sheet-tab-${index}`}
+                className={`px-4 py-2 rounded-lg font-medium transition-colors duration-200 focus:ring-2 focus:ring-blue-400 focus:outline-none ${
+                  activeSheetIndex === index
+                    ? 'bg-blue-600 text-white'
+                    : 'bg-gray-200 text-gray-700 hover:bg-gray-300'
+                }`}
+              >
+                {name}
+              </button>
           ))}
-        </div>
+          </div>
+        </nav>
       </div>
 
-      <div className="sheets-wrapper">
+      <div className="sheets-wrapper" role="region" aria-live="polite">
         {workbook.SheetNames.map((name, index) => renderSheet(name, index))}
       </div>
 
