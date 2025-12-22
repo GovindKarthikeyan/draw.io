@@ -1,0 +1,50 @@
+# iisnode configuration
+# This file provides an alternative to configuring iisnode settings in web.config
+# Place this file in the root of your application alongside server.js
+
+# Node.js environment (production/development)
+node_env: production
+
+# Logging configuration
+loggingEnabled: true
+logDirectory: iisnode
+devErrorsEnabled: false
+debuggingEnabled: false
+
+# Process management
+nodeProcessCountPerApplication: 1
+maxConcurrentRequestsPerProcess: 1024
+
+# Performance tuning
+maxNamedPipeConnectionRetry: 100
+namedPipeConnectionRetryDelay: 250
+maxNamedPipeConnectionPoolSize: 512
+maxNamedPipePooledConnectionAge: 30000
+
+# Request handling
+initialRequestBufferSize: 4096
+maxRequestBufferSize: 65536
+
+# File watching for auto-restart
+watchedFiles: '*.js;iisnode.yml'
+uncFileChangesPollingInterval: 5000
+
+# Graceful shutdown
+gracefulShutdownTimeout: 60000
+
+# Debugging
+debuggerPortRange: 5058-6058
+debuggerPathSegment: debug
+debugHeaderEnabled: false
+
+# Logging limits
+maxLogFileSizeInKB: 128
+maxTotalLogFileSizeInKB: 1024
+maxLogFiles: 20
+
+# Response handling
+flushResponse: false
+enableXFF: false
+
+# Additional settings
+promoteServerVars: ''

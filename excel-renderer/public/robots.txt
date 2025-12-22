@@ -1,0 +1,14 @@
+# robots.txt for Excel File Renderer
+
+# Allow all bots to crawl the site
+User-agent: *
+Allow: /
+
+# Disallow crawling of API endpoints
+Disallow: /api/
+
+# Sitemap location
+Sitemap: https://yourdomain.com/sitemap.xml
+
+# Crawl delay (optional, adjust as needed)
+Crawl-delay: 1
