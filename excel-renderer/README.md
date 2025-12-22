@@ -85,6 +85,21 @@ excel-renderer/
 - `.xls` - Excel 97-2003
 - `.xlsm` - Excel Macro-Enabled Workbook
 
+## Security Considerations
+
+⚠️ **Known Dependency Vulnerabilities**
+
+The `xlsx` library (v0.18.5) has known vulnerabilities:
+- **Prototype Pollution** (GHSA-4r6h-8v6p-xvw6) - High severity
+- **Regular Expression Denial of Service** (GHSA-5pgg-2g8v-p4x9) - High severity
+
+**Mitigation**: 
+- This is a client-side application where users process their own files locally
+- Files are not uploaded to a server or processed server-side
+- The risk is limited to the user's own browser session
+- Users should only upload Excel files from trusted sources
+- Monitor for xlsx library updates and upgrade when a patched version becomes available
+
 ## Browser Support
 
 The application works in all modern browsers:
@@ -100,6 +115,7 @@ The application works in all modern browsers:
 - [ ] Chart rendering
 - [ ] Large file optimization
 - [ ] Dark mode support
+- [ ] Upgrade to patched xlsx library when available
 
 ## License
 
