@@ -11,6 +11,22 @@ A Next.js application that allows users to upload Excel files and view them with
   - Browser-native print (standard print dialog)
   - Pixel-perfect print (converts sheets to images for exact reproduction)
 - 📱 **Responsive Design**: Works on desktop and mobile devices
+- 🔒 **Security-First**: Built with security best practices (see [SECURITY.md](./SECURITY.md))
+
+## Security Features
+
+This application implements comprehensive security best practices:
+
+- ✅ **Input Validation**: File type, size, and filename sanitization
+- ✅ **Security Headers**: X-Frame-Options, X-Content-Type-Options, Referrer-Policy
+- ✅ **XSS Protection**: React's safe rendering, no eval() or innerHTML
+- ✅ **Path Traversal Prevention**: Filename sanitization for file operations
+- ✅ **Error Handling**: Generic error messages, no information disclosure
+- ✅ **Environment Security**: Proper secrets management with .env files
+- ✅ **HTTPS Ready**: Configured for SSL/TLS deployment
+- ✅ **Content Security**: Safe handling of uploaded files
+
+For complete security documentation and production hardening guide, see [SECURITY.md](./SECURITY.md).
 
 ## Getting Started
 

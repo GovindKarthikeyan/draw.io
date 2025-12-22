@@ -7,6 +7,16 @@ export const runtime = 'nodejs';
 const fileStorage = new Map<string, { content: string; mimeType: string; uploadedAt: Date }>();
 
 /**
+ * Sanitize filename to prevent path traversal and other attacks
+ */
+function sanitizeFilename(filename: string): string {
+  // Remove any directory path components
+  const basename = filename.replace(/^.*[\\\/]/, '');
+  // Remove potentially dangerous characters
+  return basename.replace(/[^a-zA-Z0-9._-]/g, '_');
+}
+
+/**
  * POST handler to upload Excel, CSV, or PDF files
  * Accepts multipart/form-data with file field
  */
@@ -59,24 +69,34 @@ export async function POST(request: NextRequest) {
       );
     }
 
+    // Sanitize filename to prevent path traversal attacks
+    const sanitizedName = sanitizeFilename(file.name);
+    
+    if (!sanitizedName || sanitizedName.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid filename' },
+        { status: 400 }
+      );
+    }
+
     // Read file as ArrayBuffer and convert to base64
     const arrayBuffer = await file.arrayBuffer();
     const buffer = Buffer.from(arrayBuffer);
     const base64Content = buffer.toString('base64');
 
     // Store file with metadata
-    fileStorage.set(file.name, {
+    fileStorage.set(sanitizedName, {
       content: base64Content,
       mimeType: file.type || 'application/octet-stream',
       uploadedAt: new Date(),
     });
 
-    console.log(`[API] File uploaded: ${file.name}, size: ${file.size}, type: ${file.type}`);
+    console.log(`[API] File uploaded: ${sanitizedName}, size: ${file.size}, type: ${file.type}`);
 
     return NextResponse.json(
       {
         success: true,
-        fileName: file.name,
+        fileName: sanitizedName,
         fileSize: file.size,
         mimeType: file.type,
         uploadedAt: new Date().toISOString(),
@@ -109,7 +129,17 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    const fileData = fileStorage.get(fileName);
+    // Sanitize filename to prevent path traversal
+    const sanitizedName = sanitizeFilename(fileName);
+    
+    if (!sanitizedName || sanitizedName.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid filename' },
+        { status: 400 }
+      );
+    }
+
+    const fileData = fileStorage.get(sanitizedName);
 
     if (!fileData) {
       return NextResponse.json(
@@ -118,12 +148,12 @@ export async function GET(request: NextRequest) {
       );
     }
 
-    console.log(`[API] File retrieved: ${fileName}`);
+    console.log(`[API] File retrieved: ${sanitizedName}`);
 
     return NextResponse.json(
       {
         success: true,
-        fileName: fileName,
+        fileName: sanitizedName,
         content: fileData.content,
         mimeType: fileData.mimeType,
         uploadedAt: fileData.uploadedAt.toISOString(),
@@ -156,7 +186,17 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    const existed = fileStorage.has(fileName);
+    // Sanitize filename to prevent path traversal
+    const sanitizedName = sanitizeFilename(fileName);
+    
+    if (!sanitizedName || sanitizedName.length === 0) {
+      return NextResponse.json(
+        { error: 'Invalid filename' },
+        { status: 400 }
+      );
+    }
+
+    const existed = fileStorage.has(sanitizedName);
     
     if (!existed) {
       return NextResponse.json(
@@ -165,14 +205,14 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    fileStorage.delete(fileName);
+    fileStorage.delete(sanitizedName);
 
-    console.log(`[API] File deleted: ${fileName}`);
+    console.log(`[API] File deleted: ${sanitizedName}`);
 
     return NextResponse.json(
       {
         success: true,
-        message: `File ${fileName} deleted successfully`,
+        message: `File ${sanitizedName} deleted successfully`,
       },
       { status: 200 }
     );
