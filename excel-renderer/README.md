@@ -61,6 +61,33 @@ npm run build
 npm start
 ```
 
+### Testing
+
+The application includes comprehensive unit tests with Jest and React Testing Library.
+
+```bash
+# Run all tests
+npm test
+
+# Run tests in watch mode (for development)
+npm run test:watch
+
+# Generate coverage report
+npm run test:coverage
+
+# Run tests in CI mode
+npm run test:ci
+```
+
+**Test Coverage:**
+- Component tests (ExcelUploader, SheetRenderer)
+- API route tests (file upload, retrieval, deletion)
+- Utility tests (Application Insights telemetry)
+- Security tests (input validation, sanitization)
+- Accessibility tests (ARIA, keyboard navigation)
+
+For detailed testing documentation, see [TESTING.md](./TESTING.md).
+
 ### Deploy to IIS (Windows Server)
 
 For deployment on Windows Server with IIS, see the [IIS Deployment Guide](./IIS_DEPLOYMENT.md).
